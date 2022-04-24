@@ -3,13 +3,23 @@ import { PlayerState, Song, SongQueue } from '@moosync/moosync-types'
 import { resolve } from 'path'
 
 export class MyExtension implements MoosyncExtensionTemplate {
+  private interval: ReturnType<typeof setInterval> | undefined
+
   async onStarted() {
     console.info('Extension started')
     this.registerEvents()
 
-    setInterval(() => {
+    this.interval = setInterval(() => {
       this.setProgressbarWidth()
     }, 1000)
+
+    api.setContextMenuItem({
+      type: 'SONGS',
+      label: 'Test context menu item',
+      handler: (songs) => {
+        console.info('Clicked context menu item with data', songs)
+      }
+    })
   }
 
   private async onSongChanged(song: Song) {
@@ -29,6 +39,11 @@ export class MyExtension implements MoosyncExtensionTemplate {
   }
 
   async onStopped() {
+    // Cleanup intervals, timeout, etc in onStopped
+    if (this.interval) {
+      clearInterval(this.interval)
+    }
+
     console.info('Extension stopped')
   }
 
@@ -37,7 +52,7 @@ export class MyExtension implements MoosyncExtensionTemplate {
   }
 
   async setProgressbarWidth() {
-    // await api.setPreferences('test_progressBar', Math.random() * 100 + 1)
+    await api.setPreferences('test_progressBar', Math.random() * 100 + 1)
   }
 
   private async registerEvents() {
