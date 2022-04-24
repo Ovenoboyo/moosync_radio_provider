@@ -1,10 +1,10 @@
 import { MoosyncExtensionTemplate } from '@moosync/moosync-types'
-import { PlayerState, Song, SongQueue } from '@moosync/moosync-types/models'
+import { PlayerState, Song, SongQueue } from '@moosync/moosync-types'
 import { resolve } from 'path'
 
 export class MyExtension implements MoosyncExtensionTemplate {
   async onStarted() {
-    logger.info('Extension started')
+    console.info('Extension started')
     this.registerEvents()
 
     setInterval(() => {
@@ -13,31 +13,31 @@ export class MyExtension implements MoosyncExtensionTemplate {
   }
 
   private async onSongChanged(song: Song) {
-    logger.debug(song)
+    console.debug(song)
   }
 
   private async onPlayerStateChanged(state: PlayerState) {
-    logger.debug(state)
+    console.debug(state)
   }
 
   private async onSongQueueChanged(queue: SongQueue) {
-    logger.debug(queue)
+    console.debug(queue.index)
   }
 
   private async onVolumeChanged(volume: number) {
-    logger.debug(volume)
+    console.debug(volume)
   }
 
   async onStopped() {
-    logger.info('Extension stopped')
+    console.info('Extension stopped')
   }
 
   private async onPreferenceChanged({ key, value }: { key: string; value: any }): Promise<void> {
-    logger.info('Preferences changed at', key, 'with value', value)
+    console.info('Preferences changed at', key, 'with value', value)
   }
 
   async setProgressbarWidth() {
-    await api.setPreferences('test_progressBar', Math.random() * 100 + 1)
+    // await api.setPreferences('test_progressBar', Math.random() * 100 + 1)
   }
 
   private async registerEvents() {
@@ -76,12 +76,12 @@ export class MyExtension implements MoosyncExtensionTemplate {
     api.on('volumeChanged', this.onVolumeChanged.bind(this))
     api.on('songChanged', this.onSongChanged.bind(this))
     api.on('songQueueChanged', this.onSongQueueChanged.bind(this))
-    api.on('seeked', async (time) => logger.debug('Player seeked to', time))
+    api.on('seeked', async (time) => console.debug('Player seeked to', time))
 
     await api.registerOAuth('exampleOAuth') /* Callback paths are case-insensitive */
 
     api.on('oauthCallback', async (url) => {
-      logger.info('OAuth callback triggered', url)
+      console.info('OAuth callback triggered', url)
     })
   }
 }
