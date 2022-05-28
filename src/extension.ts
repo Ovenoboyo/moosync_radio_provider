@@ -1,7 +1,23 @@
-import { MoosyncExtensionTemplate } from '@moosync/moosync-types'
-import { PlayerState, Song, SongQueue } from '@moosync/moosync-types'
+import { MoosyncExtensionTemplate, Playlist, PlayerState, Song, SongQueue } from '@moosync/moosync-types'
 import { resolve } from 'path'
 
+const sampleSong: Song = {
+  _id: 'Another random ID',
+  title: 'Example song',
+  duration: 0,
+  date_added: Date.now(),
+  type: 'URL',
+  playbackUrl:
+    'https://file-examples.com/storage/fe8788b10b62489539afcfd/2017/11/file_example_MP3_5MG.mp3' /* If the URL is directly playable, duration is fetched at runtime */
+}
+
+const samplePlaylist: Playlist = {
+  playlist_id: 'Some random generated ID',
+  playlist_name: 'Hello this is a playlist',
+  playlist_song_count: 69,
+  playlist_coverPath: 'https://avatars.githubusercontent.com/u/91860733?s=200&v=4',
+  icon: resolve(__dirname, '../assets/icon.svg')
+}
 export class MyExtension implements MoosyncExtensionTemplate {
   private interval: ReturnType<typeof setInterval> | undefined
 
@@ -58,31 +74,24 @@ export class MyExtension implements MoosyncExtensionTemplate {
   private async registerEvents() {
     api.on('requestedPlaylists', async () => {
       return {
-        playlists: [
-          {
-            playlist_id: 'Some random generated ID',
-            playlist_name: 'Hello this is a playlist',
-            playlist_song_count: 69,
-            playlist_coverPath: 'https://avatars.githubusercontent.com/u/91860733?s=200&v=4',
-            icon: resolve(__dirname, '../assets/icon.svg')
-          }
-        ]
+        playlists: [samplePlaylist]
       }
     })
 
     api.on('requestedPlaylistSongs', async () => {
       return {
-        songs: [
-          {
-            _id: 'Another random ID',
-            title: 'Example song',
-            duration: 0,
-            date_added: Date.now(),
-            type: 'URL',
-            playbackUrl:
-              'https://file-examples.com/storage/fe8788b10b62489539afcfd/2017/11/file_example_MP3_5MG.mp3' /* If the URL is directly playable, duration is fetched at runtime */
-          }
-        ]
+        songs: [sampleSong]
+      }
+    })
+
+    api.on('requestedLyrics', async (song) => {
+      return 'Lorem Ipsum'
+    })
+
+    api.on('requestSearchResult', async (searchTerm) => {
+      return {
+        providerName: 'Example provider',
+        songs: [sampleSong]
       }
     })
 
