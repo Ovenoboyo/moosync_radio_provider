@@ -36,7 +36,6 @@ export class MyExtension implements MoosyncExtensionTemplate {
         albums: []
       }
     })
-    api.registerSearchProvider('Radio')
 
     api.on('requestedSongFromURL', async (url) => {
       const station = await this.radioApi.searchRadioStationsByUrl(url)
