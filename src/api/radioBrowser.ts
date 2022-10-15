@@ -69,7 +69,7 @@ export class RadioBrowserWrapper {
   }
 
   public async fetchTopRadioStations(limit = 100) {
-    const resp = await this._get<StationStruct[]>(`/stations?limit=${limit}&order=votes`)
+    const resp = await this._get<StationStruct[]>(`/stations/topclick?limit=${limit}&order=votes&hideBroken=true`)
     return this.parseRadioStations(...resp)
   }
 
@@ -84,7 +84,9 @@ export class RadioBrowserWrapper {
 
   public async searchRadioStation(term: string, limit = 100) {
     const prefix = this.parseSearchPrefix(term)
-    const resp = await this._get<StationStruct[]>(`/stations/by${prefix[0]}/${prefix[1]}?limit=${limit}&order=votes`)
+    const resp = await this._get<StationStruct[]>(
+      `/stations/by${prefix[0]}/${prefix[1]}?limit=${limit}&order=votes&hideBroken=true`
+    )
 
     return this.parseRadioStations(...resp)
   }
