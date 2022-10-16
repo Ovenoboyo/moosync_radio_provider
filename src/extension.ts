@@ -1,5 +1,6 @@
 import { MoosyncExtensionTemplate, Playlist } from '@moosync/moosync-types'
 import { RadioBrowserWrapper } from './api/radioBrowser'
+import { URL } from 'url'
 
 export class MyExtension implements MoosyncExtensionTemplate {
   private radioApi = new RadioBrowserWrapper()
@@ -43,6 +44,20 @@ export class MyExtension implements MoosyncExtensionTemplate {
         return {
           song: station[0]
         }
+      }
+    })
+
+    api.on('customRequest', async (url) => {
+      try {
+        const parsedUrl = new URL(url).searchParams.get('url')
+        if (parsedUrl) {
+          const decodedUrl = decodeURIComponent(parsedUrl)
+          return {
+            redirectUrl: decodedUrl
+          }
+        }
+      } catch (e) {
+        console.error('Failed to parse URL')
       }
     })
   }

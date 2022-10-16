@@ -2,6 +2,7 @@ import dns from 'dns'
 import { CacheHandler } from '../cacheHandler'
 import { Song } from '@moosync/moosync-types'
 import { makeRequest } from './utils'
+import { URL } from 'url'
 
 export class RadioBrowserWrapper {
   private cacheHandler = new CacheHandler('./radio_browser_cache', false)
@@ -45,10 +46,18 @@ export class RadioBrowserWrapper {
     return item
   }
 
+  private isUrlValid(url: string) {
+    try {
+      new URL(url)
+      return true
+    } catch {}
+    return false
+  }
+
   private parseRadioStations(...stations: StationStruct[]) {
     const songList: Song[] = []
     for (const s of stations) {
-      if (s.url_resolved) {
+      if (s.url_resolved && this.isUrlValid(s.url_resolved)) {
         songList.push({
           _id: s.stationuuid,
           title: s.name,
@@ -58,7 +67,7 @@ export class RadioBrowserWrapper {
           bitrate: s.bitrate,
           codec: s.codec,
           genre: s.tags.split(','),
-          playbackUrl: s.url_resolved,
+          playbackUrl: encodeURIComponent(s.url_resolved),
           url: s.url,
           date_added: Date.parse(s.lastchangetime_iso8601)
         })
