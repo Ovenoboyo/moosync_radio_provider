@@ -46,20 +46,6 @@ export class MyExtension implements MoosyncExtensionTemplate {
         }
       }
     })
-
-    api.on('customRequest', async (url) => {
-      try {
-        const parsedUrl = new URL(url).searchParams.get('url')
-        if (parsedUrl) {
-          const decodedUrl = decodeURIComponent(parsedUrl)
-          return {
-            redirectUrl: decodedUrl
-          }
-        }
-      } catch (e) {
-        console.error('Failed to parse URL')
-      }
-    })
   }
 
   private get RadioPlaylists(): Playlist[] {

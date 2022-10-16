@@ -3,7 +3,6 @@ import { CacheHandler } from '../cacheHandler'
 import { Song } from '@moosync/moosync-types'
 import { makeRequest } from './utils'
 import { URL } from 'url'
-
 export class RadioBrowserWrapper {
   private cacheHandler = new CacheHandler('./radio_browser_cache', false)
 
@@ -67,7 +66,7 @@ export class RadioBrowserWrapper {
           bitrate: s.bitrate,
           codec: s.codec,
           genre: s.tags.split(','),
-          playbackUrl: encodeURIComponent(s.url_resolved),
+          playbackUrl: s.url_resolved,
           url: s.url,
           date_added: Date.parse(s.lastchangetime_iso8601)
         })
